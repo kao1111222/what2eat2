@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>เขียนรีวิว | What to Eat</title>
+  <link href="css/style.css" rel="stylesheet"/>
+  <style>
+    .form-container {
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 32px;
+      background: #fff;
+      border: 3px solid #111;
+      border-radius: 16px;
+      box-shadow: 6px 6px 0px #111;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 800;
+      color: #111;
+      font-size: 15px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #111;
+      border-radius: 8px;
+      font-size: 16px;
+      background: #fff;
+      box-sizing: border-box;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #ff472e;
+      box-shadow: 2px 2px 0px #111;
+    }
+
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .search-hint {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .restaurant-search-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .restaurant-search-row .form-control {
+      min-width: 0;
+    }
+
+    @media (max-width: 600px) {
+      .restaurant-search-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">GOOD FOOD. GOOD MOOD. GOOD STORIES. ✳</div>
+  
+  <header class="container nav">
+    <a class="logo" href="index.html">WHAT <span>TO EAT</span> ✳</a>
+    <nav class="navlinks">
+      <a href="index.html">หน้าแรก</a>
+      <a href="explore.html">สำรวจรีวิว</a>
+      <a href="categories.html">หมวดหมู่</a>
+      <a href="trending.html">ยอดนิยม</a>
+      <a href="write-review.html" style="color: #ef4444; font-weight: bold;">เขียนรีวิว</a>
+    </nav>
+    <div class="nav-actions" id="nav-actions"></div>
+  </header>
+
+  <main class="container">
+    <div class="form-container">
+      <h1 style="margin-bottom: 24px; font-size: 30px; font-weight: 800; color: #111;">เขียนรีวิวใหม่ ✍️</h1>
+      
+      <form id="review-form">
+        <div class="form-group">
+          <label for="title">หัวข้อรีวิว (เมนูเด็ด / ความประทับใจ)</label>
+          <input type="text" id="title" name="title" class="form-control" required placeholder="เช่น ผัดไทยกุ้งสด อร่อยแสงออกปาก!">
+        </div>
+
+        <div class="form-group">
+          <label for="restaurant">ชื่อร้านอาหาร / สถานที่</label>
+          <div class="restaurant-search-row">
+            <input type="text" id="restaurant" name="restaurant" class="form-control" required placeholder="พิมพ์ชื่อร้าน เช่น ร้านผัดไทยเจ๊ปุ๊ก">
+            <button type="button" id="btn-search-google-maps" class="btn btn-outline" style="white-space: nowrap; font-weight: 700; cursor: pointer; border: 2px solid #111; background: #fff;">
+              🔍 ค้นหาใน Google Maps
+            </button>
+          </div>
+          <div class="search-hint">พิมพ์ชื่อร้านแล้วกด Enter หรือกดปุ่มเพื่อเปิด Google Maps</div>
+        </div>
+
+        <div class="form-group">
+          <label for="location">📍 ที่ตั้งร้าน (ไม่บังคับ)</label>
+          <input type="text" id="location" name="location" class="form-control" placeholder="เช่น แพรกษา สมุทรปราการ">
+        </div>
+
+        <div class="form-group" style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 200px;">
+            <label for="category">หมวดหมู่</label>
+            <select id="category" name="category" class="form-control">
+              <option value="อาหารไทย">อาหารไทย</option>
+              <option value="คาเฟ่/ของหวาน">คาเฟ่/ของหวาน</option>
+              <option value="นานาชาติ">นานาชาติ</option>
+              <option value="สตรีทฟู้ด">สตรีทฟู้ด</option>
+              <option value="เมนูเส้น">เมนูเส้น</option>
+              <option value="ของหวาน">ของหวาน</option>
+              <option value="อาหารสุขภาพ">อาหารสุขภาพ</option>
+              <option value="อาหารอิตาเลียน">อาหารอิตาเลียน</option>
+              <option value="เครื่องดื่ม">เครื่องดื่ม</option>
+            </select>
+          </div>
+          <div style="flex: 1; min-width: 200px;">
+            <label for="rating">คะแนนความอร่อย</label>
+            <select id="rating" name="rating" class="form-control">
+              <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+              <option value="4">⭐⭐⭐⭐ (4/5)</option>
+              <option value="3">⭐⭐⭐ (3/5)</option>
+              <option value="2">⭐⭐ (2/5)</option>
+              <option value="1">⭐ (1/5)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="image">อัปโหลดรูปภาพอาหาร/ร้าน</label>
+          <input type="file" id="image" name="image" class="form-control" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label for="body">เล่าความอร่อยให้ฟังหน่อย</label>
+          <textarea id="body" name="body" class="form-control" required placeholder="รสชาติเป็นยังไง บรรยากาศร้านดีไหม..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-red" style="width: 100%; font-size: 18px; padding: 14px; font-weight: 800; border: 2px solid #111; box-shadow: 4px 4px 0px #111; cursor: pointer;">
+          🚀 เผยแพร่รีวิว
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="logo" href="index.html">WHAT <span>TO EAT</span> ✳</a>
+        <p>พื้นที่เล็ก ๆ สำหรับคนรักอาหารและเรื่องเล่าจานโปรด</p>
+      </div>
+      <div>
+        <b>กินให้อร่อย แล้วเล่าให้ฟัง ♡</b>
+        <p>&copy; 2026 What to Eat &middot; Food Review Community</p>
+      </div>
+    </div>
+  </footer>
+  
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/zod@3.22.4/lib/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="js/app.js"></script>
+  <script src="js/pages.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const restaurantInput = document.querySelector('#restaurant');
+      const locationInput = document.querySelector('#location');
+      const searchButton = document.querySelector('#btn-search-google-maps');
+
+      function openGoogleMapsSearch() {
+        const restaurantName = restaurantInput.value.trim();
+        if (!restaurantName) {
+          restaurantInput.focus();
+          return;
+        }
+
+        const query = [restaurantName, locationInput.value.trim()].filter(Boolean).join(' ');
+        const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+
+      searchButton.addEventListener('click', openGoogleMapsSearch);
+      restaurantInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          openGoogleMapsSearch();
+        }
+      });
+      locationInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          openGoogleMapsSearch();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

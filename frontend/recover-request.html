@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>กู้คืนรหัสติดตาม | What to Eat</title>
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="topbar">GOOD FOOD. GOOD MOOD. GOOD STORIES. ✳</div>
+    <header class="container nav">
+      <a class="logo" href="index.html">WHAT <span>TO EAT</span> ✳</a>
+      <nav class="navlinks">
+        <a href="index.html">หน้าแรก</a>
+        <a href="explore.html">สำรวจรีวิว</a>
+        <a href="categories.html">หมวดหมู่</a>
+        <a href="trending.html">ยอดนิยม</a>
+        <a href="contact.html">ส่งคำร้อง</a>
+      </nav>
+      <div class="nav-actions" id="nav-actions"></div>
+    </header>
+    <main class="container">
+      <section class="page-intro">
+        <div class="eyebrow">WHAT TO EAT COMMUNITY</div>
+        <h1>กู้คืนรหัสติดตาม</h1>
+        <p>กรอกอีเมลที่ใช้ส่งคำร้อง ระบบจะส่งลิงก์ยืนยันไปยังอีเมลนั้น</p>
+        <p>ใช้ได้กับคำร้องที่ส่งหลังจากมีระบบรหัสติดตามแล้วเท่านั้น</p>
+      </section>
+      <div class="form-wrap">
+        <form id="recovery-form">
+          <div class="form-row">
+            <label for="recovery-email">อีเมลที่ใช้ส่งคำร้อง</label>
+            <input
+              class="field"
+              id="recovery-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              maxlength="190"
+              required
+              placeholder="กรอกอีเมลเดิมที่ใช้ส่งคำร้อง"
+            />
+          </div>
+          <button class="btn btn-red" type="submit">ส่งลิงก์กู้คืน</button>
+        </form>
+        <section id="recovery-confirmation" hidden>
+          <p>เปิดลิงก์จากอีเมลของคุณแล้ว กดยืนยันเพื่อสร้างรหัสติดตามใหม่</p>
+          <button class="btn btn-red" id="recovery-confirm-button" type="button">
+            ยืนยันและสร้างรหัสใหม่
+          </button>
+        </section>
+        <div id="recovery-message" aria-live="polite"></div>
+        <div id="recovery-result"></div>
+        <p><a href="track-request.html">กลับไปหน้าติดตามคำร้อง</a></p>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div>
+          <a class="logo" href="index.html">WHAT <span>TO EAT</span> ✳</a>
+          <p>พื้นที่เล็ก ๆ สำหรับคนรักอาหารและเรื่องเล่าจานโปรด</p>
+        </div>
+        <div><a href="contact.html">ส่งคำร้องใหม่</a></div>
+      </div>
+    </footer>
+    <div class="toast" id="toast"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/pages.js"></script>
+  </body>
+</html>

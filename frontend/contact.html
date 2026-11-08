@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="th">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   ติดต่อเรา | What to Eat
+  </title>
+  <link href="css/style.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <div class="topbar">
+   GOOD FOOD. GOOD MOOD. GOOD STORIES. ✳
+  </div>
+  <header class="container nav">
+   <a class="logo" href="index.html">
+    WHAT
+    <span>
+     TO EAT
+    </span>
+    ✳
+   </a>
+   <nav class="navlinks">
+    <a href="index.html">
+     หน้าแรก
+    </a>
+    <a href="explore.html">
+     สำรวจรีวิว
+    </a>
+    <a href="categories.html">
+     หมวดหมู่
+    </a>
+    <a href="trending.html">
+     ยอดนิยม
+    </a>
+    <a href="write-review.html">
+     เขียนรีวิว
+    </a>
+   </nav>
+   <div class="nav-actions" id="nav-actions">
+    <a class="btn btn-outline" href="login.html">
+     เข้าสู่ระบบ
+    </a>
+    <a class="btn btn-red" href="register.html">
+     สมัครสมาชิก
+    </a>
+   </div>
+  </header>
+  <main class="container">
+   <section class="page-intro">
+    <div class="eyebrow">
+     WHAT TO EAT COMMUNITY
+    </div>
+    <h1>ส่งคำร้องถึงผู้ดูแล</h1>
+    <p>
+     แจ้งปัญหาการใช้งาน ขอความช่วยเหลือ หรือส่งข้อเสนอแนะให้ทีมงาน
+     <a href="track-request.html">มีรหัสแล้ว? ติดตามสถานะคำร้อง</a>
+    </p>
+   </section>
+   <div class="form-wrap">
+    <form id="contact-form">
+     <div class="form-row">
+      <label for="contact-name">ชื่อของคุณ</label>
+      <input class="field" id="contact-name" name="name" maxlength="100" autocomplete="name" required/>
+     </div>
+     <div class="form-row">
+      <label for="contact-email">อีเมลสำหรับติดต่อกลับ</label>
+      <input class="field" id="contact-email" name="email" maxlength="190" autocomplete="email" required type="email"/>
+     </div>
+     <div class="form-row">
+      <label for="contact-type">ประเภทคำร้อง</label>
+      <select class="field" id="contact-type" name="type" required>
+       <option value="แจ้งปัญหา">แจ้งปัญหาการใช้งาน</option>
+       <option value="ขอความช่วยเหลือ">ขอความช่วยเหลือ</option>
+       <option value="เสนอแนะ">เสนอแนะ</option>
+       <option value="อื่น ๆ">อื่น ๆ</option>
+      </select>
+     </div>
+     <div class="form-row">
+      <label for="contact-subject">หัวข้อ</label>
+      <input class="field" id="contact-subject" name="subject" maxlength="150" placeholder="สรุปปัญหาสั้น ๆ" required/>
+     </div>
+     <div class="form-row">
+      <label for="contact-message-body">รายละเอียด</label>
+      <textarea class="field" id="contact-message-body" name="message" maxlength="5000" required rows="5" placeholder="อธิบายปัญหาหรือสิ่งที่ต้องการให้ทีมงานช่วยเหลือ"></textarea>
+     </div>
+     <div class="form-row">
+      <label for="contact-attachment">ภาพประกอบหรือภาพหน้าจอ (ไม่บังคับ)</label>
+      <input class="field" id="contact-attachment" name="attachment" type="file" accept=".jpg,.jpeg,.jfif,.png,.webp,image/jpeg,image/jfif,image/png,image/webp"/>
+      <small>รองรับ JPG/JPEG/JFIF, PNG หรือ WEBP ขนาดไม่เกิน 5MB</small>
+     </div>
+     <button class="btn btn-red" type="submit">ส่งคำร้องถึงผู้ดูแล &nearrow;</button>
+     <p id="contact-message" role="status" aria-live="polite"></p>
+    </form>
+   </div>
+  </main>
+  <footer class="footer">
+   <div class="container footer-inner">
+    <div>
+     <a class="logo" href="index.html">
+      WHAT
+      <span>
+       TO EAT
+      </span>
+      ✳
+     </a>
+     <p>
+      พื้นที่เล็ก ๆ สำหรับคนรักอาหารและเรื่องเล่าจานโปรด
+     </p>
+    </div>
+    <div>
+     <b>
+      <a href="about.html">
+       เกี่ยวกับเรา
+      </a>
+      <a href="contact.html">
+       ติดต่อ
+      </a>
+      <a href="track-request.html">ติดตามคำร้อง</a>
+      <a href="faq.html">
+       คำถามที่พบบ่อย
+      </a>
+     </b>
+     <p>
+      <a href="privacy.html">
+       ความเป็นส่วนตัว
+      </a>
+      <a href="terms.html">
+       ข้อกำหนด
+      </a>
+      &middot; &copy; 2026 What to Eat
+     </p>
+    </div>
+   </div>
+  </footer>
+  <div class="toast" id="toast">
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js">
+  </script>
+  <script src="js/app.js">
+  </script>
+  <script src="js/pages.js">
+  </script>
+ </body>
+</html>

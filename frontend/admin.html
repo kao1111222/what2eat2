@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แดชบอร์ดผู้ดูแลระบบ - WHAT TO EAT</title>
+  
+  <link rel="stylesheet" href="css/style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body { background-color: #fdfbf7; background-image: radial-gradient(#ddd 1px, transparent 0); background-size: 20px 20px; }
+    .admin-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+    .admin-header { margin-bottom: 32px; border-bottom: 2px solid #111; padding-bottom: 20px; }
+    .admin-header h1 { font-size: 32px; color: #ff472e; font-weight: 900; margin-bottom: 8px; }
+    .admin-header p { color: #4b5563; font-size: 16px; }
+
+    .admin-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .stat-card-admin { background: #fff; border: 2px solid #111; border-radius: 12px; padding: 24px; box-shadow: 4px 4px 0 #111; text-align: center; transition: all 0.2s; }
+    .stat-card-admin:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #111; }
+    .stat-number { font-size: 48px; font-weight: 900; color: #111; margin-bottom: 4px; line-height: 1; }
+    .stat-label { color: #4b5563; font-size: 16px; font-weight: bold; margin: 0; }
+
+    .admin-table-wrapper { background: #fff; border: 2px solid #111; border-radius: 12px; padding: 24px; box-shadow: 4px 4px 0 #111; margin-bottom: 40px; overflow-x: auto; }
+    .admin-table-wrapper h2 { font-size: 22px; font-weight: 800; margin-bottom: 20px; color: #111; display: flex; align-items: center; gap: 8px; }
+    .admin-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .admin-table th { padding: 14px 12px; border-bottom: 3px solid #111; font-weight: 800; font-size: 16px; color: #111; background: #f9fafb; }
+    .admin-table td { padding: 14px 12px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; color: #374151; }
+    .admin-table tr:hover td { background-color: #fdfbf7; }
+
+    .role-badge { padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: bold; border: 1px solid #111; display: inline-block; }
+    .role-admin { background: #fef08a; color: #854d0e; }
+    .role-user { background: #f3f4f6; color: #374151; }
+    
+    .action-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-view { background: #fff; border: 2px solid #111; color: #111; padding: 6px 14px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; transition: 0.2s; box-shadow: 2px 2px 0 #111; }
+    .btn-view:hover { background: #f3f4f6; transform: translate(-1px, -1px); box-shadow: 3px 3px 0 #111; }
+    .btn-delete { background: #ef4444; border: 2px solid #111; color: white; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; box-shadow: 2px 2px 0 #111; }
+    .btn-delete:hover { background: #dc2626; transform: translate(-1px, -1px); box-shadow: 3px 3px 0 #111; }
+    .request-message { max-width: 320px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">GOOD FOOD. GOOD MOOD. GOOD STORIES. ✳</div>
+  <div class="container">
+    <nav class="nav">
+      <a href="index.html" class="logo">WHAT<span>TO</span>EAT ✳</a>
+      <div class="navlinks">
+        <a href="index.html">หน้าแรก</a>
+        <a href="explore.html">สำรวจรีวิว</a>
+      </div>
+      <div class="nav-actions" id="nav-actions">
+      </div>
+    </nav>
+  </div>
+
+  <main class="admin-container">
+    
+    <div class="admin-header">
+      <h1>⚙️ แดชบอร์ดผู้ดูแลระบบ</h1>
+      <p>จัดการภาพรวม ตรวจสอบรีวิว และดูแลสมาชิกในระบบ</p>
+    </div>
+
+
+    <div class="admin-stats-grid">
+      <div class="stat-card-admin">
+        <div class="stat-number" id="stat-users">0</div>
+        <h3 class="stat-label">👥 สมาชิกทั้งหมด</h3>
+      </div>
+      <div class="stat-card-admin">
+        <div class="stat-number" id="stat-reviews">0</div>
+        <h3 class="stat-label">📝 รีวิวในระบบ</h3>
+      </div>
+      <div class="stat-card-admin">
+        <div class="stat-number" id="stat-messages" style="color: #ef4444;">0</div>
+        <h3 class="stat-label">✉️ ข้อความติดต่อ</h3>
+      </div>
+    </div>
+
+    <div class="admin-table-wrapper">
+      <h2>📝 รีวิวล่าสุดในระบบ</h2>
+      <table class="admin-table" id="admin-reviews-table">
+        <thead>
+          <tr>
+            <th style="width: 35%;">หัวข้อรีวิว</th>
+            <th style="width: 20%;">ผู้เขียน</th>
+            <th style="width: 20%;">ร้านอาหาร</th>
+            <th style="width: 25%;">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="4" style="text-align: center;">กำลังโหลดข้อมูลรีวิว...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="admin-table-wrapper">
+      <h2>👥 สมาชิกในระบบ</h2>
+      <table class="admin-table" id="admin-users-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">ชื่อผู้ใช้</th>
+            <th style="width: 30%;">อีเมล</th>
+            <th style="width: 20%;">สิทธิ์</th>
+            <th style="width: 25%;">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="4" style="text-align: center;">กำลังโหลดข้อมูลสมาชิก...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="admin-table-wrapper">
+      <h2>📨 คำร้องและแจ้งปัญหาจากผู้ใช้</h2>
+      <table class="admin-table" id="admin-messages-table">
+        <thead>
+          <tr>
+            <th>คำร้อง</th>
+            <th>ผู้แจ้ง</th>
+            <th>รายละเอียด</th>
+            <th>วันที่ส่ง</th>
+            <th>สถานะ</th>
+            <th>จัดการ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="6" style="text-align: center;">กำลังโหลดคำร้อง...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = getUser();
+      if (!user || user.role !== 'admin') {
+        Swal.fire({
+          icon: 'error', 
+          title: 'ปฏิเสธการเข้าถึง', 
+          text: 'หน้านี้สำหรับผู้ดูแลระบบเท่านั้น!', 
+          confirmButtonColor: '#111'
+        }).then(() => window.location.replace('index.html'));
+        return;
+      }
+
+      try {
+        const reviewsData = await api('/api/reviews');
+        const reviews = Array.isArray(reviewsData) ? reviewsData : (reviewsData.reviews || []);
+        document.getElementById('stat-reviews').textContent = reviews.length || 0;
+
+        const reviewTbody = document.querySelector('#admin-reviews-table tbody');
+        if (reviews.length > 0) {
+          reviewTbody.innerHTML = reviews.slice(0, 15).map(r => `
+            <tr>
+              <td><strong style="color:#111;">${escapeHtml(r.title)}</strong><br><span style="font-size:12px; color:#6b7280;">★ ${r.rating}/5</span></td>
+              <td>${escapeHtml(r.author_name || 'ไม่ระบุ')}</td>
+              <td>${escapeHtml(r.restaurant)}</td>
+              <td>
+                <div class="action-group">
+                  <a href="review.html?id=${r.id}" class="btn-view" target="_blank">👁️ ดู</a>
+                  <button class="btn-delete" onclick="adminDeleteReview('${r.id}')">🗑 ลบ</button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          reviewTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color:#6b7280;">ยังไม่มีรีวิวในระบบ</td></tr>`;
+        }
+      } catch (err) {
+        document.querySelector('#admin-reviews-table tbody').innerHTML = `<tr><td colspan="4" style="text-align: center; color: #ef4444;">ไม่สามารถดึงข้อมูลรีวิวได้ (${escapeHtml(err.message)})</td></tr>`;
+      }
+
+      try {
+        const users = await api('/api/admin/users');
+        const userList = Array.isArray(users) ? users : (users.users || []);
+        document.getElementById('stat-users').textContent = userList.length || 0;
+        
+        const userTbody = document.querySelector('#admin-users-table tbody');
+        if (userList.length > 0) {
+          userTbody.innerHTML = userList.map(u => `
+            <tr>
+              <td><strong>${escapeHtml(u.name || u.username || 'ไม่ระบุชื่อ')}</strong></td>
+              <td>${escapeHtml(u.email || '-')}</td>
+              <td>
+                <span class="role-badge ${u.role === 'admin' ? 'role-admin' : 'role-user'}">
+                  ${escapeHtml((u.role || 'user').toUpperCase())}
+                </span>
+              </td>
+              <td>
+                <div class="action-group">
+                  ${u.role !== 'admin' ? `<button class="btn-view" onclick="promoteUser('${u.id}', this)">⭐ ตั้งเป็นแอดมิน</button><button class="btn-delete" onclick="deleteUser('${u.id}')">🚫 ลบบัญชี</button>` : '<span style="color:#9ca3af; font-size:14px;">แอดมิน</span>'}
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          userTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color:#6b7280;">ยังไม่มีสมาชิกในระบบ</td></tr>`;
+        }
+      } catch (err) {
+        document.querySelector('#admin-users-table tbody').innerHTML = `<tr><td colspan="4" style="text-align: center; color: #ef4444;">ไม่สามารถดึงข้อมูลผู้ใช้ได้ (${escapeHtml(err.message)})</td></tr>`;
+      }
+
+      try {
+        const inbox = await api('/api/admin/messages');
+        const requests = inbox.messages || [];
+        document.getElementById('stat-messages').textContent = requests.length;
+        const messageTbody = document.querySelector('#admin-messages-table tbody');
+        messageTbody.innerHTML = requests.length ? requests.map((item) => `
+          <tr data-request-row="${item.id}">
+            <td><strong>${escapeHtml(item.subject)}</strong></td>
+            <td>${escapeHtml(item.name)}<br><a href="mailto:${encodeURIComponent(item.email)}">${escapeHtml(item.email)}</a></td>
+            <td class="request-message">${escapeHtml(item.message.slice(0, 140))}${item.message.length > 140 ? '…' : ''}${item.has_attachment ? '<br><span>มีภาพแนบ</span>' : ''}</td>
+            <td>${escapeHtml(new Date(item.created_at).toLocaleString('th-TH'))}</td>
+            <td>
+              <select class="field" data-request-status="${item.id}" data-previous-status="${escapeHtml(item.status)}" aria-label="สถานะคำร้องจาก ${escapeHtml(item.name)}">
+                <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>รอดำเนินการ</option>
+                <option value="investigating" ${item.status === 'investigating' ? 'selected' : ''}>กำลังตรวจสอบ</option>
+                <option value="resolved" ${item.status === 'resolved' ? 'selected' : ''}>แก้ไขแล้ว</option>
+                <option value="closed" ${item.status === 'closed' ? 'selected' : ''}>ปิดเรื่อง</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn-view" type="button" data-request-details="${item.id}">ดูรายละเอียด / ตอบกลับ</button>
+              <button class="btn-view" type="button" data-request-delete="${item.id}" style="margin-top:6px;border-color:#ef4444;color:#b91c1c">ลบคำร้อง</button>
+            </td>
+          </tr>
+        `).join('') : '<tr><td colspan="6" style="text-align: center; color:#6b7280;">ยังไม่มีคำร้องจากผู้ใช้</td></tr>';
+
+        messageTbody.addEventListener('click', async (event) => {
+          const deleteButton = event.target.closest('[data-request-delete]');
+          if (deleteButton) {
+            const item = requests.find((request) => String(request.id) === deleteButton.dataset.requestDelete);
+            if (!item) return;
+
+            const confirmation = await Swal.fire({
+              title: 'ยืนยันการลบคำร้อง?',
+              text: `คำร้อง “${item.subject}” จะถูกลบถาวรและไม่สามารถกู้คืนได้`,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'ลบคำร้อง',
+              cancelButtonText: 'ยกเลิก',
+              confirmButtonColor: '#dc2626'
+            });
+            if (!confirmation.isConfirmed) return;
+
+            deleteButton.disabled = true;
+            try {
+              const result = await api(`/api/admin/messages/${item.id}`, { method: 'DELETE' });
+              messageTbody.querySelector(`tr[data-request-row="${item.id}"]`)?.remove();
+              const index = requests.indexOf(item);
+              if (index !== -1) requests.splice(index, 1);
+              document.getElementById('stat-messages').textContent = requests.length;
+              if (!requests.length) {
+                messageTbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color:#6b7280;">ยังไม่มีคำร้องจากผู้ใช้</td></tr>';
+              }
+              await Swal.fire(
+                result.attachmentCleanupFailed ? 'ลบคำร้องแล้ว' : 'ลบสำเร็จ',
+                result.message,
+                result.attachmentCleanupFailed ? 'warning' : 'success'
+              );
+            } catch (err) {
+              deleteButton.disabled = false;
+              await Swal.fire('ลบคำร้องไม่สำเร็จ', err.message, 'error');
+            }
+            return;
+          }
+
+          const button = event.target.closest('[data-request-details]');
+          if (!button) return;
+          const item = requests.find((request) => String(request.id) === button.dataset.requestDetails);
+          if (!item) return;
+
+          let attachmentUrl = null;
+          try {
+            if (item.has_attachment) {
+              const response = await axios.get(`${API}/api/admin/messages/${item.id}/attachment`, {
+                headers: { Authorization: `Bearer ${getToken()}` },
+                responseType: 'blob'
+              });
+              attachmentUrl = URL.createObjectURL(response.data);
+            }
+
+            const result = await Swal.fire({
+              title: 'รายละเอียดคำร้อง',
+              width: 720,
+              html: `
+                <div style="text-align:left;overflow-wrap:anywhere">
+                  <p><strong>หัวข้อ:</strong> ${escapeHtml(item.subject)}</p>
+                  <p><strong>ผู้แจ้ง:</strong> ${escapeHtml(item.name)} · <a href="mailto:${encodeURIComponent(item.email)}">${escapeHtml(item.email)}</a></p>
+                  <p><strong>วันที่ส่ง:</strong> ${escapeHtml(new Date(item.created_at).toLocaleString('th-TH'))}</p>
+                  <p><strong>รายละเอียดเต็ม:</strong></p>
+                  <p style="white-space:pre-wrap">${escapeHtml(item.message)}</p>
+                  ${attachmentUrl ? `<p><strong>ภาพหน้าจอ/ไฟล์แนบ:</strong><br><img src="${attachmentUrl}" alt="ภาพที่ผู้แจ้งแนบ" style="display:block;max-width:100%;max-height:320px;object-fit:contain;margin-top:8px"></p>` : '<p>ไม่มีไฟล์แนบ</p>'}
+                  <label for="admin-reply" style="display:block;margin:16px 0 6px"><strong>คำตอบที่จะส่งไปยังอีเมลผู้แจ้ง</strong></label>
+                  <textarea id="admin-reply" class="swal2-textarea" maxlength="5000" placeholder="พิมพ์คำตอบถึงผู้แจ้ง">${escapeHtml(item.admin_reply || '')}</textarea>
+                  ${item.reply_email_sent_at ? `<small>ส่งคำตอบล่าสุดแล้ว ${escapeHtml(new Date(item.reply_email_sent_at).toLocaleString('th-TH'))}</small>` : ''}
+                </div>`,
+              showCancelButton: true,
+              confirmButtonText: 'ส่งคำตอบทางอีเมล',
+              cancelButtonText: 'ปิด',
+              preConfirm: () => {
+                const reply = document.querySelector('#admin-reply').value.trim();
+                if (!reply) {
+                  Swal.showValidationMessage('กรุณาพิมพ์คำตอบก่อนส่ง');
+                  return false;
+                }
+                return reply;
+              }
+            });
+
+            if (result.isConfirmed) {
+              button.disabled = true;
+              try {
+                await api(`/api/admin/messages/${item.id}/reply`, {
+                  method: 'POST',
+                  body: JSON.stringify({ reply: result.value })
+                });
+                item.admin_reply = result.value;
+                item.status = 'resolved';
+                item.reply_email_sent_at = new Date().toISOString();
+                const statusSelect = messageTbody.querySelector(`[data-request-status="${item.id}"]`);
+                if (statusSelect) {
+                  statusSelect.value = 'resolved';
+                  statusSelect.dataset.previousStatus = 'resolved';
+                }
+                await Swal.fire('ส่งคำตอบแล้ว', 'ส่งอีเมลถึงผู้แจ้งและอัปเดตสถานะเป็น “แก้ไขแล้ว” เรียบร้อย', 'success');
+              } catch (err) {
+                await Swal.fire('ส่งคำตอบไม่สำเร็จ', err.message, 'error');
+              } finally {
+                button.disabled = false;
+              }
+            }
+          } catch (err) {
+            await Swal.fire('เปิดรายละเอียดไม่สำเร็จ', err.response?.data?.error || err.message, 'error');
+          } finally {
+            if (attachmentUrl) URL.revokeObjectURL(attachmentUrl);
+          }
+        });
+
+        messageTbody.addEventListener('change', async (event) => {
+          const select = event.target.closest('[data-request-status]');
+          if (!select) return;
+          const previousStatus = select.dataset.previousStatus || 'new';
+          select.disabled = true;
+          try {
+            await api(`/api/admin/messages/${select.dataset.requestStatus}`, {
+              method: 'PATCH',
+              body: JSON.stringify({ status: select.value })
+            });
+            select.dataset.previousStatus = select.value;
+            toast('อัปเดตสถานะคำร้องแล้ว');
+          } catch (err) {
+            select.value = previousStatus;
+            Swal.fire('อัปเดตไม่สำเร็จ', err.message, 'error');
+          } finally {
+            select.disabled = false;
+          }
+        });
+      } catch (err) {
+        document.querySelector('#admin-messages-table tbody').innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444;">ไม่สามารถดึงคำร้องได้ (${escapeHtml(err.message)})</td></tr>`;
+      }
+    });
+
+    window.deleteUser = async function(id) {
+      const confirmDelete = await Swal.fire({
+        title: 'ยืนยันลบผู้ใช้?', 
+        text: "ข้อมูลทั้งหมดของบัญชีนี้จะหายไป", 
+        icon: 'warning',
+        showCancelButton: true, 
+        confirmButtonColor: '#ef4444', 
+        cancelButtonColor: '#6b7280', 
+        confirmButtonText: 'ลบเลย!'
+      });
+      if (!confirmDelete.isConfirmed) return;
+
+      try {
+        await api(`/api/admin/users/${id}`, { method: 'DELETE' });
+        toast('ลบผู้ใช้เรียบร้อยแล้ว');
+        setTimeout(() => location.reload(), 1000);
+      } catch (err) {
+        Swal.fire('ข้อผิดพลาด', err.message, 'error');
+      }
+    };
+
+    window.promoteUser = async function(id, button) {
+      const confirmation = await Swal.fire({
+        title: 'กำหนดสิทธิ์แอดมิน?',
+        text: 'สมาชิกคนนี้จะสามารถจัดการสมาชิก รีวิว และคำร้องในระบบได้',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#111',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'ยืนยันกำหนดสิทธิ์',
+        cancelButtonText: 'ยกเลิก'
+      });
+      if (!confirmation.isConfirmed) return;
+
+      button.disabled = true;
+      try {
+        await api(`/api/admin/users/${id}/role`, {
+          method: 'PATCH',
+          body: JSON.stringify({ role: 'admin' })
+        });
+        toast('กำหนดสิทธิ์แอดมินเรียบร้อยแล้ว');
+        setTimeout(() => location.reload(), 700);
+      } catch (err) {
+        button.disabled = false;
+        await Swal.fire('กำหนดสิทธิ์ไม่สำเร็จ', err.message, 'error');
+      }
+    };
+
+    window.adminDeleteReview = async function(id) {
+      const confirmDelete = await Swal.fire({
+        title: 'ลบรีวิวนี้ทิ้ง?', 
+        icon: 'warning', 
+        showCancelButton: true, 
+        confirmButtonColor: '#ef4444', 
+        cancelButtonColor: '#6b7280', 
+        confirmButtonText: 'ลบรีวิว'
+      });
+      if (!confirmDelete.isConfirmed) return;
+
+      try {
+        await api(`/api/reviews/${id}`, { method: 'DELETE' });
+        toast('ลบรีวิวเรียบร้อยแล้ว');
+        setTimeout(() => location.reload(), 1000);
+      } catch (err) {
+        Swal.fire('ข้อผิดพลาด', err.message, 'error');
+      }
+    };
+  </script>
+</body>
+</html>
